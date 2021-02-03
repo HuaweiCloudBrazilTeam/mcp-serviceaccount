@@ -1,26 +1,25 @@
 # MCP - Multi-Cloud Container Platform
 ## O que é Multi-Cloud Container Platform (MCP)?
-A Multi-Cloud Container Platform (MCP) é desenvolvida pela HUAWEI CLOUD com base em anos de experiência no campo de contêineres em nuvem e tecnologias avançadas da federação de clusters. Fornece soluções conteinerizadas em multi-nuvem e nuvem híbrida para gerenciamento unificado de clusters entre nuvens e implantação unificada e distribuição de tráfego de aplicativos em clusters. Ele não só resolve a recuperação de desastres em várias nuvens, mas também desempenha um papel importante no compartilhamento de tráfego, na dissociação do armazenamento de dados e processamento de serviços, na dissociação de ambientes de desenvolvimento e produção e na alocação flexível de recursos computacionais. 
+A Multi-Cloud Container Platform (MCP) da HUAWEI CLOUD foi desenvolvida, com base em anos de experiência no campo de contêineres em nuvem e tecnologias avançadas da federação de clusters, para fornecer soluções conteinerizadas em multi-nuvem e nuvem híbrida, possibilitando o gerenciamento unificado de clusters entre nuvens e a implantação unificada e distribuição de tráfego de aplicativos em clusters. Ela não só resolve a recuperação de desastres em várias nuvens, mas também desempenha um papel importante no compartilhamento de tráfego, na dissociação do armazenamento de dados e processamento de serviços, na dissociação de ambientes de desenvolvimento e produção e na alocação flexível de recursos computacionais. 
 Para saber mais visite: https://support.huaweicloud.com/en-us/usermanual-mcp/mcp_01_0001.html
 
 ![](https://support.huaweicloud.com/en-us/productdesc-mcp/en-us_image_0228801720.png "Multi-Cloud Container Platform")
 
 
-Este documento tem o proposito de instruir os usuarios do MCP como importar cluster de Kubernetes de nuvens publica como AWS e GCP. Outras ofertas de nuvem publica não foram testadas até o momento da criação deste documento.
+Este documento tem o propósito de instruir os usuários do MCP em como importar cluster de Kubernetes de nuvens públicas, como AWS e GCP. Outras ofertas de nuvens públicas não foram testadas até o momento da criação deste documento.
 
 O processo de importação de um cluster kubernetes no MCP consiste em utilizar o arquivo de configuração kubeconfig do cluster kubernetes que deseja federar com o MCP.
 Veja o passo a passo [aqui](https://support.huaweicloud.com/en-us/usermanual-mcp/mcp_01_0007.html "Huawei Cloud Support Page")
 
-
-Maiores informaçoes sobre arquivo de configuração kubeconfig podem ser acessadas [aqui](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/ "Kubernetes Documents Homepage"). 
+Maiores informações sobre o arquivo de configuração kubeconfig podem ser acessadas [aqui](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/ "Kubernetes Documents Homepage"). 
 
 
 ### Vamos começar!
 *Neste tutorial estamos considerando que os clusters GKE e/ou AKS já existem e vocês têm acesso ao kube-apiserver como administrador.*
 
-Para que o MCP possa ter acesso ao cluster kubernetes na AWS/GCP é necessario criar um ServiceAccount, pois o arquivo kubeconfig padrão destes provedores utilizam tokens por padrão para se autenticar no kube-apiserver como exemplos abaixo:
+Para que o MCP possa ter acesso ao cluster kubernetes na AWS/GCP é necessário criar um ServiceAccount, pois o arquivo kubeconfig padrão destes provedores utilizam tokens por padrão para se autenticar no kube-apiserver, como demonstrado nos exemplos abaixo:
 
-Arquivo kubeconfig da AWS EKS
+Arquivo kubeconfig da AWS EKS:
 ```yaml
 apiVersion: v1
 clusters:
@@ -57,7 +56,7 @@ users:
       provideClusterInfo: false
 ```
 
-Arquivo kubeconfig da GCP GKE
+Arquivo kubeconfig da GCP GKE:
 ```yaml
 apiVersion: v1
 clusters:
@@ -85,7 +84,7 @@ users:
       name: gcp
 ```
 
-Como podemos notar nos arquivos kubeconfig eles utilizam os utilitarios de lihna de comando (CLI) para gerar e atualizar um token para acesso ao cluster kubernetes, entretanto o MCP não tem estes utilitários em seu ambiente e também as credenciais que estes se utilizam para acessar recursos do provedor de nuvem. Então como fazer para o MCP acessar meu cluster?
+Como podemos notar nos arquivos kubeconfig, são utilizados os utilitários de linha de comando (CLI) para gerar e atualizar um token para acesso ao cluster kubernetes. Entretanto o MCP não possui estes utilitários em seu ambiente e tampouco as credenciais utilizadas para acessar recursos do provedor de nuvem. Então como fazer para o MCP acessar meu cluster?
 
 Vamos ao passo-a-passo: 
 
@@ -94,7 +93,7 @@ Criar um ServiceAccount e gerar um token de acesso e utilizar esse token em noss
 
 1. Criar um ServiceAccount:
 
-Para isso precisamos criar um manifest yaml "my-mcp-serviceaccount.yaml" digamos no diretorio /home/fabio 
+Para isso precisamos criar um manifest yaml "my-mcp-serviceaccount.yaml", como por exemplo no diretório "/home/fabio":
 
 ```yaml
 apiVersion: v1
@@ -132,7 +131,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ```
 
-Agora você deve executar o comando abaixo para criar os recursos descritos no manifest apresentado acima
+Agora você deve executar o comando abaixo para criar os recursos descritos no manifest apresentado acima:
 
 ``` 
 kubectl apply -f /home/fabio/my-service-account.yaml 
@@ -157,7 +156,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIzVWdBNWF5WjlRVzVHUm1IVU16Z05YdnRxc2h4aDh5c2tpS1BE
 
 Agora devemos criar e editar nosso arquivo kubeconfig utilizando o usuário e conta de serviço que criamos nos passos anteriores.
 
-Você pode pegar um dos exemplo JSON ou YAML aqui no repo e usar como modelo para seu arquivo kubeconfig, abaixo segue um exemplo de kubeconfig YAML
+Você pode pegar um dos exemplo JSON ou YAML aqui no repo e usar como modelo para seu arquivo kubeconfig, abaixo segue um exemplo de kubeconfig YAML:
 
 ```yaml
   ---
@@ -183,4 +182,4 @@ current-context: user@cluster-1
 
 4. Importar este aquivo em seu cluster MCP
 
-As instruçoes para importar o kubeconfig para o MCP estão na pagina de suporte da Huawei Cloud e você pode acessar [aqui](https://support.huaweicloud.com/en-us/usermanual-mcp/mcp_01_0007.html "Huawei Cloud Support").
+As instruções para importar o kubeconfig para o MCP estão na página de suporte da Huawei Cloud, a qual você pode acessar [aqui](https://support.huaweicloud.com/en-us/usermanual-mcp/mcp_01_0007.html "Huawei Cloud Support").
