@@ -85,12 +85,16 @@ users:
       name: gcp
 ```
 
-Como podemos notar nos arquivos kubeconfig eles utilizam os utilitarios de lihna de comando (CLI) para gerar e atualizar um token para acesso ao cluster kubernetes, entretanto o MCP não tem estes utilitários em seu ambiente e também as credenciais que estes se utilizam para acessar recursos do provedor de nuvem. Então como fazer para o MCP acessar meu cluster AKS?
+Como podemos notar nos arquivos kubeconfig eles utilizam os utilitarios de lihna de comando (CLI) para gerar e atualizar um token para acesso ao cluster kubernetes, entretanto o MCP não tem estes utilitários em seu ambiente e também as credenciais que estes se utilizam para acessar recursos do provedor de nuvem. Então como fazer para o MCP acessar meu cluster?
 
-Vamos ao passo-a-passo: Criar um ServiceAccount e gerar um token de acesso e utilizar esse token em nosso arquivo kubeconfig.
+Vamos ao passo-a-passo: 
 
-1. Criar um ServiceAccount
-  - Para isso precisamos criar um manifest yaml "my-mcp-serviceaccount.yaml" digamos no diretorio /home/fabio 
+Criar um ServiceAccount e gerar um token de acesso e utilizar esse token em nosso arquivo kubeconfig.
+***
+
+1. Criar um ServiceAccount:
+
+Para isso precisamos criar um manifest yaml "my-mcp-serviceaccount.yaml" digamos no diretorio /home/fabio 
 
 ```yaml
 apiVersion: v1
@@ -135,21 +139,27 @@ kubectl apply -f /home/fabio/my-service-account.yaml
 ```
 
 2. Obter um token
-  - Para obter o token devemos digitar o seguinte comando:
+
+Para obter o token devemos digitar o seguinte comando:
+
   ```
 kubectl get secret -n default `kubectl get secret -n default | grep my-user | awk '{print $1}'` -oyaml | grep token: | awk '{print $2}' | base64 -d
 ```
+
 O comando acima deve gerar um token na console como no exemplo 👇🏽:
+
 ```
 fabiobo@fabio-pc:~$ kubectl get secret -n default `kubectl get secret -n default | grep my-user | awk '{print $1}'` -oyaml | grep token: | awk '{print $2}' | base64 -d
 eyJhbGciOiJSUzI1NiIsImtpZCI6IjIzVWdBNWF5WjlRVzVHUm1IVU16Z05YdnRxc2h4aDh5c2tpS1BEdzlzN28ifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6Im15LXVzZXItdG9rZW4tdDRkZDQiLCJrdWJlcm5ldGVzLmlvL3
 ```
-3. Criar e editar o arquivo kubeconfig
-  - Agora devemos criar e editar nosso arquivo kubeconfig utilizando o usuário e conta de serviço que criamos nos passos anteriores.
-  
-  Você pode pegar um dos exemplo JSON ou YAML aqui no repo e usar como modelo para seu arquivo kubeconfig, abaixo segue um exemplo de kubeconfig YAML
 
-  ```yaml
+3. Criar e editar o arquivo kubeconfig
+
+Agora devemos criar e editar nosso arquivo kubeconfig utilizando o usuário e conta de serviço que criamos nos passos anteriores.
+
+Você pode pegar um dos exemplo JSON ou YAML aqui no repo e usar como modelo para seu arquivo kubeconfig, abaixo segue um exemplo de kubeconfig YAML
+
+```yaml
   ---
 kind: Config
 apiVersion: v1
@@ -169,11 +179,8 @@ contexts:
     cluster: gcp-cluster-1
     user: user
 current-context: user@cluster-1
-  ```
+```
 
 4. Importar este aquivo em seu cluster MCP
-  - As instruçoes para importar o kubeconfig para o MCP estão na pagina de suporte da Huawei Cloud e você pode acessar [aqui](https://support.huaweicloud.com/en-us/usermanual-mcp/mcp_01_0007.html "Huawei Cloud Support")
-  
 
-
-
+As instruçoes para importar o kubeconfig para o MCP estão na pagina de suporte da Huawei Cloud e você pode acessar [aqui](https://support.huaweicloud.com/en-us/usermanual-mcp/mcp_01_0007.html "Huawei Cloud Support").
