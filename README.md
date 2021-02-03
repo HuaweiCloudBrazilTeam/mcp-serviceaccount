@@ -85,7 +85,7 @@ users:
       name: gcp
 ```
 
-Como podemos notar nos arquivos kubeconfig eles utilizam os utilitarios de lina de comando (CLI) para gerar e atualizar um token para acesso ao cluster kubernetes, entretanto o MCP não tem estes utilitários em seu ambiente e também as credenciais que estes se utilizam para acessar recursos do provedor de nuvem. Então como fazer para o MCP acessar meu cluster AKS?
+Como podemos notar nos arquivos kubeconfig eles utilizam os utilitarios de lihna de comando (CLI) para gerar e atualizar um token para acesso ao cluster kubernetes, entretanto o MCP não tem estes utilitários em seu ambiente e também as credenciais que estes se utilizam para acessar recursos do provedor de nuvem. Então como fazer para o MCP acessar meu cluster AKS?
 
 Vamos ao passo-a-passo: Criar um ServiceAccount e gerar um token de acesso e utilizar esse token em nosso arquivo kubeconfig.
 
